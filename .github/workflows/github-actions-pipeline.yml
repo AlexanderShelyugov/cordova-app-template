@@ -45,11 +45,12 @@ jobs:
 
             - name: Install dependencies
               run: yarn install --frozen-lockfile
+            - name: Install dependencies for Cordova
+              working-directory: ./cordova-app
+              run: npm ci
+            
             - name: Add Cordova
               run: yarn global add cordova
-            - name: Add Android platform
-              working-directory: ./cordova-app
-              run: cordova platform add android
 
             - name: Build the Web App, place it to Cordova
               run: yarn cordova-build

@@ -48,5 +48,8 @@ jobs:
             - name: Add Cordova
               run: yarn global add cordova
 
-            - name: Build the Cordova App
-              run: yarn cordova-build
+            - name: Build the Web App, place it to Cordova
+              run: yarn cordova-prepare
+            - name: Build the APK
+              working-directory: ./cordova-app
+              run: cordova build android

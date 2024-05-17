@@ -47,9 +47,9 @@ jobs:
               run: yarn install --frozen-lockfile
             - name: Add Cordova
               run: yarn global add cordova
+            - name: Add Android platform
+              working-directory: ./cordova-app
+              run: cordova platform add android
 
             - name: Build the Web App, place it to Cordova
-              run: yarn cordova-prepare
-            - name: Build the APK
-              working-directory: ./cordova-app
-              run: cordova build android
+              run: yarn cordova-build

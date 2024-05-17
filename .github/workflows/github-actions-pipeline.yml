@@ -47,7 +47,6 @@ jobs:
             - name: Install dependencies
               run: yarn install --frozen-lockfile
             - name: Install Cordova dependencies
-              working-directory: ./cordova-app
               run: |
                 cd ./cordova-app
                 npm ci

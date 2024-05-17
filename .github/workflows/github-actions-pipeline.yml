@@ -45,6 +45,8 @@ jobs:
 
             - name: Install dependencies
               run: yarn install --frozen-lockfile
+            - name: Add Cordova
+              run: yarn global add cordova
 
             - name: Build the Cordova App
               run: yarn cordova-build

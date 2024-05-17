@@ -43,17 +43,16 @@ jobs:
               uses: gradle/gradle-build-action@v3
             - name: Setup Android SDK
               uses: android-actions/setup-android@v3
-            - name: Install Cordova
-              run: yarn global add cordova
 
             - name: Install dependencies
               run: yarn install --frozen-lockfile
-            - name: Install dependencies for Cordova
+            - name: Install Cordova dependencies
               working-directory: ./cordova-app
-              run: npm ci
-            - name: Add Android platform
-              working-directory: ./cordova-app
-              run: cordova platform add android
+              run: |
+                cd ./cordova-app
+                npm ci
+                yarn global add cordova
+                cordova platform add android
 
             - name: Build the Web App, place it to Cordova
               run: yarn cordova-build

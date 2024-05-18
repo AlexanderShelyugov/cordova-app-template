@@ -6,7 +6,6 @@ on:
             - main
 
 env:
-    TARGETS_ANDROID: \"platforms;android-33\"
     VERSION_NODE: 21.x
     VERSION_JAVA: "17"
 
@@ -15,7 +14,7 @@ jobs:
         name: Build website
         runs-on: ubuntu-latest
         steps:
-            - name: Check out the repository to the runner
+            - name: Check repository
               uses: actions/checkout@v4
 
             - name: Setup Node.js
@@ -58,10 +57,10 @@ jobs:
             - name: Setup Android SDK
               uses: android-actions/setup-android@v3
             - name: Install necessary tools and Android target platforms
-              run: sdkmanager "platform-tools" ${{ env.TARGETS_ANDROID }}
+              run: sdkmanager "platform-tools" "platforms;android-33"
 
-            - name: Setup Cordova
-              run: yarn global add cordova
+            - name: Install Cordova
+              run: npm install -g cordova
 
             - name: Install Cordova dependencies
               working-directory: cordova-app
@@ -81,7 +80,7 @@ jobs:
             - name: Build the APK
               run: cordova build android
 
-            - name: Release the APK
+            - name: Publish the APK
               uses: actions/upload-artifact@v4
               with:
                   name: release-apk

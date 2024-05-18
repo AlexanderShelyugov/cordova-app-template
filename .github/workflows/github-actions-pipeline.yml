@@ -6,6 +6,7 @@ on:
             - main
 jobs:
     build-web-app:
+        name: Build website
         runs-on: ubuntu-latest
         steps:
             - name: Check out the repository to the runner
@@ -23,6 +24,7 @@ jobs:
               run: yarn build
 
     build-android-app:
+        name: Build the Android app
         runs-on: ubuntu-latest
         needs: build-web-app
         steps:
@@ -56,8 +58,7 @@ jobs:
             - name: Add Android platform
               working-directory: cordova-app
               run: |
-                pwd
-                ls -la
+                mkdir -p www
                 cordova platform add android
 
             - name: Check Cordova requirements

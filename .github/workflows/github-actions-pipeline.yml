@@ -6,7 +6,7 @@ on:
             - main
 
 env:
-    TARGETS_ANDROID: "platforms;android-33"
+    TARGETS_ANDROID: \"platforms;android-33\"
     VERSION_NODE: 21.x
     VERSION_JAVA: "17"
 

@@ -1,9 +1,15 @@
 name: Cordova App CI Pipeline
-run-name: ${{ github.actor }} have started the pipeline 🚀
+run-name: 🚀 ${{ github.actor }} have started the pipeline
 on:
     push:
         branches:
             - main
+
+env:
+    TARGETS_ANDROID: "platforms;android-33"
+    VERSION_NODE: 21.x
+    VERSION_JAVA: "17"
+
 jobs:
     build-web-app:
         name: Build website
@@ -15,13 +21,20 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: 21.x
+                  node-version: ${{ env.VERSION_NODE }}
 
             - name: Install dependencies
               run: yarn install --frozen-lockfile
 
             - name: Build the web app
               run: yarn build
+
+            - name: Store static webpages
+              uses: actions/upload-artifact@v4
+              with:
+                  name: webapp-static-pages
+                  retention-days: 1
+                  path: dist
 
     build-android-app:
         name: Build the Android app
@@ -34,36 +47,42 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: 21.x
+                  node-version: ${{ env.VERSION_NODE }}
             - name: Setup Java
               uses: actions/setup-java@v4
               with:
-                  distribution: "temurin"
-                  java-version: "17"
+                  distribution: temurin
+                  java-version: ${{ env.VERSION_JAVA }}
             - name: Setup Gradle
               uses: gradle/actions/setup-gradle@v3
             - name: Setup Android SDK
               uses: android-actions/setup-android@v3
-            - name: Install necessary tools and Android platform
-              run: sdkmanager "platform-tools" "platforms;android-33"
+            - name: Install necessary tools and Android target platforms
+              run: sdkmanager "platform-tools" ${{ env.TARGETS_ANDROID }}
 
             - name: Setup Cordova
               run: yarn global add cordova
 
-            - name: Install dependencies
-              run: yarn install --frozen-lockfile
             - name: Install Cordova dependencies
               working-directory: cordova-app
               run: npm ci
             - name: Add Android platform
               working-directory: cordova-app
               run: |
-                mkdir -p www
-                cordova platform add android
+                  mkdir -p www
+                  cordova platform add android
 
-            - name: Check Cordova requirements
-              working-directory: cordova-app
-              run: cordova requirements
+            - name: Get static webpages
+              uses: actions/download-artifact@v4
+              with:
+                  name: webapp-static-pages
+                  path: cordova-app/www
 
-            - name: Build the Apk
-              run: yarn cordova-build
+            - name: Build the APK
+              run: cordova build android
+
+            - name: Release the APK
+              uses: actions/upload-artifact@v4
+              with:
+                  name: release-apk
+                  path: cordova-app/platforms/android/app/build/outputs/apk/debug/app-debug.apk

@@ -43,9 +43,7 @@ jobs:
             run:
                 working-directory: cordova-app
         steps:
-            - name: Checkout sources
-              uses: actions/checkout@v4
-
+            # Prepare the overall environment
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
@@ -57,14 +55,21 @@ jobs:
                   java-version: ${{ env.VERSION_JAVA }}
             - name: Setup Gradle
               uses: gradle/actions/setup-gradle@v3
+              with:
+                # Here, we disable Gradle cache. But you can use it if necessary.
+                cache-disabled: true
             - name: Setup Android SDK
               uses: android-actions/setup-android@v3
             - name: Install necessary tools and Android target platforms
               run: sdkmanager "platform-tools" "platforms;android-33"
 
+            # Now we need our repository
+            - name: Checkout sources
+              uses: actions/checkout@v4
+
+            # Install everything related to Cordova
             - name: Install Cordova
               run: npm install -g cordova
-
             - name: Install Cordova dependencies
               run: npm ci
             - name: Add Android platform

@@ -61,6 +61,7 @@ jobs:
             - name: Setup Android SDK
               uses: android-actions/setup-android@v3
             - name: Install necessary tools and Android target platforms
+              working-directory: .
               run: sdkmanager "platform-tools" "platforms;android-33"
 
             # Now we need our repository
